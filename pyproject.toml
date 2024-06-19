@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resume"
+version = "0.0.1"
+dependencies = [
+    "rich",
+    "pydantic",
+    "requests",
+    'importlib-metadata; python_version<"3.10"',
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]  # ["."] by default
+include = ["resume*"]  # ["*"] by default
+exclude = ["resume.tests*"]  # empty by default
+namespaces = false  # true by default
