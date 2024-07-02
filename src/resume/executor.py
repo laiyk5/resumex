@@ -1,196 +1,113 @@
-from .graph_task import GraphTask
-from .step import Step
-
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Any, Callable, Tuple
-import json
+import datetime
+import logging
 import os
+import typing as t
+from random import random
+
+import graphviz
+import jsonlines
 from pydantic import BaseModel
 
-from rich.progress import (
-    TextColumn,
-    Progress,
-    BarColumn,
-    TimeRemainingColumn,
-    TimeElapsedColumn,
-    SpinnerColumn,
-)
+from .job_graph import JobGraph
+from .scheduler import Scheduler
+from .task import Task
+
+logger = logging.getLogger(__name__)
 
 
-class _State(BaseModel):
-    result: List[Any] = []
-    progress: int = 0
-
-
-def _load_state(state_file_path: str) -> _State:
-    """
-    Loads the execution state from a file.
-
-    Args:
-        state_file_path (str): The path to the state file.
-
-    Returns:
-        _State: The loaded state.
-    """
-    with open(state_file_path, "r") as f:
-        state_dict = json.load(f)
-    state = _State(**state_dict)
-    return state
-
-
-def _save_state(state: _State, state_file_path: str) -> None:
-    """
-    Saves the execution state to a file.
-
-    Args:
-        state (_State): The state to save.
-        state_file_path (str): The path to the state file.
-    """
-    with open(state_file_path, "w") as f:
-        f.write(state.model_dump_json(indent=4))
-
-
-def _execute_task(
-    steps_in_order: List[Step], state_file_path: str, progress: Progress, task_id: int
-):
-    """
-    Executes the tasks in the GraphTask in topological order, resuming from a saved state if it exists.
-
-    Args:
-        task (GraphTask): The GraphTask object whose tasks will be executed.
-        state_file_path (str): The path to the state file for resuming progress.
-    """
-    
-    def _resume_linear_task(
-        result: List[Any], steps: List[Step], start: int
-    ) -> List[Any]:
-        assert len(result) >= start
-
-        result = result[:start]
-
-        steps_iter = iter(steps)
-        for _ in range(start):
-            next(steps_iter)
-        progress.update(task_id, advance=state.progress)
-
-        try:
-            for i, s in enumerate(steps_iter):
-                progress.update(task_id, description=s.name)
-                result.append(s())
-                progress.update(task_id, advance=1)
-
-        except Exception as e:
-            print(f"Error during execution: {e}")
-
-        return result
-
-    if os.path.exists(state_file_path):
-        state = _load_state(state_file_path)
-    else:
-        state = _State()
-
-    result = _resume_linear_task(state.result, steps_in_order, state.progress)
-
-    # Commit the progress and result.
-    state.result = result
-    state.progress = len(result)
-    _save_state(state, state_file_path)
+class _Record(BaseModel):
+    task_name: str
+    timestamp: str = datetime.datetime.now().strftime(r"%d/%m/%Y,%H:%M:%S")
 
 
 class Executor:
-    """
-    Execute a list of tasks in parallel with the ability to resume from a saved state and display progress bars for each task.
+    scheduler: Scheduler
+    tasks: t.Dict[str, Task]
+    finished_tasks: t.List[_Record] = []
 
-    Attributes:
-        task_list (List[GraphTask]): A list of GraphTask objects to be executed.
-    """
+    def __init__(self, scheduler, tasks, cache_fname=None) -> None:
+        self.scheduler = scheduler
+        self.tasks = tasks
 
-    task_list: List[GraphTask]
+        self.__dot = self.scheduler.job.draw_graph(render=False)
 
-    def __init__(self, task_list: List[GraphTask]):
-        """
-        Initializes the Executor with a list of GraphTask objects.
-
-        Args:
-            task_list (List[GraphTask]): A list of GraphTask objects to be executed.
-        """
-        self.task_list = task_list
-
-    def run(self, state_dpth:str):
-        """run the tasks.
-
-        Args:
-            state_dpth (str): the directory where you want to store the state files.
-        """
-        assert os.path.exists(state_dpth)
-
-        progress = Progress(
-            TextColumn("[blue][progress.description]{task.fields[name]}", justify="left"),
-            TextColumn("[progress.description]{task.description}", justify="right"),
-            BarColumn(),
-            "[progress.percentage]{task.completed}/{task.total}",
-            "[progress.percentage]{task.percentage:>3.0f}%",
-            TimeRemainingColumn(),
-            TimeElapsedColumn(),
-            SpinnerColumn("clock"),
-            # refresh_per_second=3,  # bit slower updates
+        self.cache_fname = (
+            cache_fname if cache_fname is not None else self.__get_cache_fname()
         )
-        with progress:
-            with ThreadPoolExecutor() as executor:
-                futures = {}
-                for i, task in enumerate(self.task_list):
-                    steps_in_order = task.serialize()
-                    task_id = progress.add_task(
-                        "",
-                        name=f"Task {task.name}",
-                        total=len(steps_in_order),
-                        visible=True,
-                    )
-                    future = executor.submit(
-                        _execute_task,
-                        steps_in_order,
-                        os.path.join(state_dpth, f'state_{task.name}.json'),
-                        progress,
-                        task_id,
-                    )  # TODO: Come up with a new machenism of storing state files.
-                    futures[future] = task
-                for future in as_completed(futures):
-                    task = futures[future]
-                    try:
-                        future.result()
-                    except Exception as exc:
-                        print(f"Task {task.name} generated an exception: {exc}")
-                    else:
-                        pass
+        os.makedirs(os.path.dirname(self.cache_fname), exist_ok=True)
+
+        if os.path.exists(self.cache_fname):
+            self.__load_cache()
+
+    def __load_cache(self):
+        with jsonlines.open(self.cache_fname, "r") as reader:
+            for line in reader:
+                record = _Record(**line)
+                self.finished_tasks.append(record)
+                scheduler.commit(record.task_name)
+                self.__dot.node(record.task_name, color="green")
+
+    def __add_cache(self, task_name):
+        record = _Record(task_name=task_name)
+        self.finished_tasks.append(record)
+        with jsonlines.open(self.cache_fname, "a") as writer:
+            writer.write(record.model_dump())
+
+    def __get_cache_fname(self):
+        return os.path.join("_cache", "resume", self.scheduler.job.name + ".jsonl")
+
+    def run(self):
+        while True:
+            task_name = self.scheduler.schedule()
+            if self.scheduler.is_finished:
+                break
+            assert task_name is not None
+            self.__dot.node(task_name, color="red")
+
+            self.tasks[task_name]()
+            self.scheduler.commit(task_name)
+
+            self.__add_cache(task_name)
+            self.__dot.node(task_name, color="green")
+
+    def draw_graph(self) -> graphviz.Digraph:
+        """Draw the graph in graphviz.Digraph.
+        
+        The graph is updated as execution goes. Green indicates success,
+        Red means failure.
+
+        Returns:
+            graphviz.Digraph: the graph.
+        """
+        return self.__dot
 
 
-# Example usage
 if __name__ == "__main__":
-    import time
+    taskgraph = JobGraph("greate")
+    taskgraph.add_edge("1", "2")
+    taskgraph.add_edge("1", "3")
+    taskgraph.add_edge("2", "4")
+    taskgraph.add_edge("2", "5")
+    taskgraph.add_edge("3", "5")
+    taskgraph.add_edge("3", "6")
+    taskgraph.add_edge("4", "7")
+    taskgraph.add_edge("5", "7")
+    taskgraph.add_edge("6", "7")
+    taskgraph.draw_graph(render=True)
+    scheduler = Scheduler(taskgraph)
 
-    def step_func(x):
-        time.sleep(3)
-        return x * x
+    def madman(i):
+        if random() < 0.2:
+            raise RuntimeError
+        print(i)
 
-    steps = [
-        Step(step_func, (1,), name="Step 1"),
-        Step(step_func, (2,), name="Step 2"),
-        Step(step_func, (3,), name="Step 3"),
-    ]
+    steps = {f"{i}": Task(lambda i=i: madman(i)) for i in range(1, 8)}
 
-    task_graph1 = GraphTask("Revolution")
-    for step in steps:
-        task_graph1.add_node(step)
-
-    for i in range(1, len(steps)):
-        task_graph1.add_edge(steps[i], steps[i - 1])
-
-    task_graph2 = GraphTask("WW2")
-    task_graph2.add_node(Step(step_func, (1,), name="Step 4"))
-    task_graph2.add_node(Step(step_func, (1,), name="Step 5"))
-
-    executor = Executor([task_graph1, task_graph2])
-    
-    state_dpth = '_states'
-    os.makedirs(state_dpth, exist_ok=True)
-    executor.run(state_dpth)
+    executor = Executor(scheduler, steps)
+    try:
+        executor.run()
+    except:
+        pass
+    finally:
+        graph = executor.draw_graph()
+        graph.render(f"JobGraph-{executor.scheduler.job.name}")

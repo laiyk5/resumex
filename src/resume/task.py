@@ -1,4 +1,4 @@
-class Step:
+class Task:
     """
     Encapsulates a function call with its arguments and keyword arguments, 
     allowing it to be executed as a single callable entity.
@@ -25,7 +25,7 @@ class Step:
         return self._func(*self._args, **self._kwargs)
 
     def __str__(self) -> str:
-        return self.name
+        return 'Step "self.name"'
 
     def __repr__(self) -> str:
-        return f"_Step(func={self._func!r}, args={self._args!r}, kwargs={self._args!r}, name={self.name!r})"
+        return f"_Step(func={self._func!r}, args={self._args!r}, kwargs={self._kwargs!r}, name={self.name!r})"
