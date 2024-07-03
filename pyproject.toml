@@ -4,7 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "resumex"
+authors = [
+    {name = "Yikai Lai", email = "laiyk5@163.com"},
+]
+description = "A python package tha handle common issues in data processing."
 version = "0.0.1"
+readme = "README.md"
 dependencies = [
     "graphviz",
     "jsonlines",
