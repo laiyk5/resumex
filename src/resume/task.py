@@ -1,12 +1,13 @@
 class Task:
     """
-    Encapsulates a function call with its arguments and keyword arguments, 
+    Encapsulates a function call with its arguments and keyword arguments,
     allowing it to be executed as a single callable entity.
-    
+
     Attributes:
         name (str): The name of the step.
 
     """
+
     def __init__(self, func, args: tuple = (), kwargs: dict = {}, name=None):
         """
         Args:

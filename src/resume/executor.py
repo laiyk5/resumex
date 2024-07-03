@@ -72,7 +72,7 @@ class Executor:
 
     def draw_graph(self) -> graphviz.Digraph:
         """Draw the graph in graphviz.Digraph.
-        
+
         The graph is updated as execution goes. Green indicates success,
         Red means failure.
 
@@ -83,27 +83,27 @@ class Executor:
 
 
 if __name__ == "__main__":
-    taskgraph = JobGraph("greate")
-    taskgraph.add_edge("1", "2")
-    taskgraph.add_edge("1", "3")
-    taskgraph.add_edge("2", "4")
-    taskgraph.add_edge("2", "5")
-    taskgraph.add_edge("3", "5")
-    taskgraph.add_edge("3", "6")
-    taskgraph.add_edge("4", "7")
-    taskgraph.add_edge("5", "7")
-    taskgraph.add_edge("6", "7")
-    taskgraph.draw_graph(render=True)
-    scheduler = Scheduler(taskgraph)
+    job = JobGraph("greate")
+    job.add_edge("1", "2")
+    job.add_edge("1", "3")
+    job.add_edge("2", "4")
+    job.add_edge("2", "5")
+    job.add_edge("3", "5")
+    job.add_edge("3", "6")
+    job.add_edge("4", "7")
+    job.add_edge("5", "7")
+    job.add_edge("6", "7")
+    job.draw_graph(render=True)
+    scheduler = Scheduler(job)
 
     def madman(i):
         if random() < 0.2:
             raise RuntimeError
         print(i)
 
-    steps = {f"{i}": Task(lambda i=i: madman(i)) for i in range(1, 8)}
+    tasks = {f"{i}": Task(lambda i=i: madman(i)) for i in range(1, 8)}
 
-    executor = Executor(scheduler, steps)
+    executor = Executor(scheduler, tasks)
     try:
         executor.run()
     except:
