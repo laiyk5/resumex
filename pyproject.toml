@@ -3,12 +3,12 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "resume"
+name = "resumex"
 version = "0.0.1"
 dependencies = [
-    "rich",
+    "graphviz",
+    "jsonlines",
     "pydantic",
-    "requests",
     'importlib-metadata; python_version<"3.10"',
 ]
 

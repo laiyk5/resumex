@@ -4,7 +4,7 @@ import time
 from logging import FileHandler, StreamHandler
 from multiprocessing import freeze_support
 
-from resume import JobGraph, MPExecutor
+from resumex import JobGraph, MPExecutor
 
 
 def busy_wait(dt):
