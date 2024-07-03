@@ -20,6 +20,14 @@ resume.job\_graph module
    :undoc-members:
    :show-inheritance:
 
+resume.mp\_executor module
+--------------------------
+
+.. automodule:: resume.mp_executor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 resume.scheduler module
 -----------------------
 

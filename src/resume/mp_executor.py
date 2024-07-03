@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import logging.handlers
 import multiprocessing as mp
@@ -11,24 +12,36 @@ STOP = "__STOP__"
 
 logger = logging.getLogger(__name__)
 
-def worker(fn:t.Callable[[dict], dict], src_queues: dict[str, mp.Queue], dest_queues: dict[str, mp.Queue], log_queue: mp.Queue):
+
+def worker(
+    fn: t.Callable[[dict], dict],
+    src_queues: dict[str, mp.Queue],
+    dest_queues: dict[str, mp.Queue],
+    log_queue: mp.Queue,
+):
     qh = logging.handlers.QueueHandler(log_queue)
-    
+
     logger.addHandler(qh)
     logger.setLevel(logging.DEBUG)
-    
+
     while True:
         src_datas = {task: queue.get() for task, queue in src_queues.items()}
         if STOP in src_datas.values():
             for dest, queue in dest_queues.items():
                 queue.put(STOP)
             return
-        
+
         dest_datas = fn(src_datas)
-        logger.debug(f"prev: {list(src_queues.keys())}\tnext: {list(dest_queues.keys())}\tsrc_data: {src_datas}\tdest_data: {dest_datas}")
+
+        assert dest_datas.keys() == dest_queues.keys()
+
+        logger.debug(
+            f"prev: {list(src_queues.keys())}\tnext: {list(dest_queues.keys())}\tsrc_data: {src_datas}\tdest_data: {dest_datas}"
+        )
         for dest, data in dest_datas.items():
             dest_queues[dest].put(data)
-    
+
+
 class MPExecutor:
     """Multi-Progessing Executor
 
@@ -76,10 +89,10 @@ class MPExecutor:
 
     def __init_processes(self):
         logging_queue = mp.Queue()
-        
-        listener = logging.handlers.QueueListener(logging_queue, *logger.handlers)  
+
+        listener = logging.handlers.QueueListener(logging_queue, *logger.handlers)
         listener.start()
-        
+
         self.processes = [
             mp.Process(
                 target=worker,
@@ -87,19 +100,19 @@ class MPExecutor:
                     self.task_fn[task],
                     self.src_queues[task],
                     self.dest_queues[task],
-                    logging_queue
+                    logging_queue,
                 ),
             )
             for task in self.job.node - set([self.job.begin_task, self.job.end_task])
         ]
-        
+
         for p in self.processes:
             p.start()
 
     def run(self, input: dict[str, t.Any]):
         for task, value in input.items():  # a graph might have multiple inputs.
             self.dest_queues[self.job.begin_task][task].put(value)
-            
+
         if STOP in input.values():
             return {}
 
@@ -107,6 +120,7 @@ class MPExecutor:
             ret = queue.get()
             logger.debug(f"GETTING {task}: {ret}")
             return ret
+
         result = {
             task: __print_get(task, queue)
             for task, queue in self.src_queues[self.job.end_task].items()
@@ -114,10 +128,12 @@ class MPExecutor:
 
         return result
 
+    async def arun(self, input: dict[str, t.Any]):
+        return await asyncio.to_thread(self.run, input)
+
     def shutdown(self):
         input_tasks = self.job.next[self.job.begin_task]
         inputs = {task: STOP for task in input_tasks}
         self.run(inputs)
         for p in self.processes:
             p.join()
-
