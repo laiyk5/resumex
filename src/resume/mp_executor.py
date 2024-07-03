@@ -2,11 +2,9 @@ import asyncio
 import logging
 import logging.handlers
 import multiprocessing as mp
-import os
 import typing as t
 
 from .job_graph import JobGraph
-from .task import Task
 
 STOP = "__STOP__"
 
@@ -44,25 +42,24 @@ def worker(
 
 class MPExecutor:
     """Multi-Progessing Executor
-
-    job is described as a digraph, the digraph is then traversed and queues
-    between each task is created.
-    1. The worker function wrap the task, taking two dictionary
-    of queues: one for source group, one for dest group, mapping task name
-    into queue. The task should also take two dictionary of inputs, one for
-    source and one for dest, mapping task name into python object.
     """
 
-    job: JobGraph
-    task_fn: dict[str, t.Callable]
+    _job: JobGraph
+    _task_fn: dict[str, t.Callable[[dict], dict]]
 
-    src_queues: dict[str, dict[str, mp.Queue]]
-    dest_queues: dict[str, dict[str, mp.Queue]]
-    processes: list[mp.Process]
+    _src_queues: dict[str, dict[str, mp.Queue]]
+    _dest_queues: dict[str, dict[str, mp.Queue]]
+    _processes: list[mp.Process]
 
-    def __init__(self, job: JobGraph, task_fn: dict[str, t.Callable]):
-        self.job = job
-        self.task_fn = task_fn
+    def __init__(self, job: JobGraph, task_fn: dict[str, t.Callable[[dict], dict]]):
+        """_summary_
+
+        Args:
+            job (JobGraph): job is described as a digraph, the digraph is then traversed and queues between each task is created.
+            task_fn (dict[str, t.Callable[[dict], dict]]): task function sould accept a dict mapping input taskname to input data, and return a dict mapping output taskname to output data.
+        """
+        self._job = job
+        self._task_fn = task_fn
 
         # initialize (src/dest)-queue mapping for each task.
         self.__init_queues()
@@ -71,21 +68,21 @@ class MPExecutor:
         self.__init_processes()
 
     def __init_queues(self):
-        tasks = [self.job.begin_task] + self.job.serialize()
+        tasks = [self._job.begin_task] + self._job.serialize()
 
-        self.src_queues: dict[str, dict[str, mp.Queue]] = {}
-        self.dest_queues: dict[str, dict[str, mp.Queue]] = {}
+        self._src_queues: dict[str, dict[str, mp.Queue]] = {}
+        self._dest_queues: dict[str, dict[str, mp.Queue]] = {}
 
-        for task in tasks + [self.job.end_task]:
-            self.src_queues[task] = {}
-            self.dest_queues[task] = {}
+        for task in tasks + [self._job.end_task]:
+            self._src_queues[task] = {}
+            self._dest_queues[task] = {}
 
         for task in tasks:
-            dest_set = self.job.next[task]
+            dest_set = self._job.next[task]
             for dest in dest_set:
                 q = mp.Queue()
-                self.dest_queues[task][dest] = q
-                self.src_queues[dest][task] = q
+                self._dest_queues[task][dest] = q
+                self._src_queues[dest][task] = q
 
     def __init_processes(self):
         logging_queue = mp.Queue()
@@ -93,47 +90,64 @@ class MPExecutor:
         listener = logging.handlers.QueueListener(logging_queue, *logger.handlers)
         listener.start()
 
-        self.processes = [
+        self._processes = [
             mp.Process(
                 target=worker,
                 args=(
-                    self.task_fn[task],
-                    self.src_queues[task],
-                    self.dest_queues[task],
+                    self._task_fn[task],
+                    self._src_queues[task],
+                    self._dest_queues[task],
                     logging_queue,
                 ),
             )
-            for task in self.job.node - set([self.job.begin_task, self.job.end_task])
+            for task in self._job.node - set([self._job.begin_task, self._job.end_task])
         ]
 
-        for p in self.processes:
+        for p in self._processes:
             p.start()
 
-    def run(self, input: dict[str, t.Any]):
+    def run(self, input: dict[str, t.Any]) -> dict[str, t.Any]:
+        """run on the input and block until all the output task generate results.
+
+        Args:
+            input (dict[str, Any]): a dictionary that map input task name to the input data
+
+        Returns:
+            dict[str, Any]: a dictionary that map output task name to the output data.
+        """
         for task, value in input.items():  # a graph might have multiple inputs.
-            self.dest_queues[self.job.begin_task][task].put(value)
+            self._dest_queues[self._job.begin_task][task].put(value)
 
         if STOP in input.values():
             return {}
 
-        def __print_get(task, queue):
+        def __print_get(task: str, queue: mp.Queue) -> t.Any:
             ret = queue.get()
             logger.debug(f"GETTING {task}: {ret}")
             return ret
 
         result = {
             task: __print_get(task, queue)
-            for task, queue in self.src_queues[self.job.end_task].items()
+            for task, queue in self._src_queues[self._job.end_task].items()
         }
 
         return result
 
-    async def arun(self, input: dict[str, t.Any]):
+    async def arun(self, input: dict[str, t.Any]) -> dict[str, t.Any]:
+        """async version of `run`
+
+        Args:
+            input (dict[str, t.Any]): a dictionary that map input task name to the input data
+
+        Returns:
+            Coroutine: a coroutine that wrap output of `run`.
+        """
         return await asyncio.to_thread(self.run, input)
 
     def shutdown(self):
-        input_tasks = self.job.next[self.job.begin_task]
+        """join all the subprocesses."""
+        input_tasks = self._job.next[self._job.begin_task]
         inputs = {task: STOP for task in input_tasks}
         self.run(inputs)
-        for p in self.processes:
+        for p in self._processes:
             p.join()

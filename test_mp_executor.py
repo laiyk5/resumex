@@ -65,14 +65,14 @@ NUMBER_OF_ROUNDS = 30
 
 
 async def main(executor: MPExecutor, rounds):
-    tasks = []
-    for _ in range(rounds):
-        co = asyncio.create_task(executor.arun({"1": None}))
-        tasks.append(co)
-
-    completed, pending = await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
-
-    return completed
+    tasks = [
+        executor.arun({"1": None})
+        for _ in range(rounds)
+    ]
+    
+    results = await asyncio.gather(*tasks)
+    print(results)
+    return results
 
 
 if __name__ == "__main__":
