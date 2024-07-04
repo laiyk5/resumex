@@ -1,7 +1,7 @@
-resume
-======
+resumex
+=======
 
 .. toctree::
    :maxdepth: 4
 
-   resume
+   resumex

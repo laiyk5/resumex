@@ -10,4 +10,4 @@ To use resume, first install it using pip:
 
 .. code-block:: console
 
-    (.venv) $ pip install resume
+    (.venv) $ pip install resumex

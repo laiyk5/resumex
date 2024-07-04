@@ -22,3 +22,9 @@ where = ["src"]  # ["."] by default
 include = ["resume*"]  # ["*"] by default
 exclude = ["resume.tests*"]  # empty by default
 namespaces = false  # true by default
+
+[project.optional-dependencies]
+docs = [
+  "sphinx",
+  "sphinx_rtd_theme"
+]

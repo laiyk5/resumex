@@ -1,4 +1,4 @@
-sphinx-apidoc -f -o docs/source/resume src/resume/
+sphinx-apidoc -f -o docs/source/resumex src/resumex/
 
 cd docs
 make html
