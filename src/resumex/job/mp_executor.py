@@ -41,7 +41,7 @@ def _worker(
 
 
 class MPExecutor:
-    """Multi-Progessing Executor
+    """Multi-Processing Executor
     """
 
     _job: JobGraph
@@ -66,17 +66,17 @@ class MPExecutor:
         self.__init_processes()
 
     def __init_queues(self):
-        tasks = [self._job.begin_task] + self._job.serialize()
+        tasks = [self._job._begin_task] + self._job.serialize()
 
         self._src_queues: dict[str, dict[str, mp.Queue]] = {}
         self._dest_queues: dict[str, dict[str, mp.Queue]] = {}
 
-        for task in tasks + [self._job.end_task]:
+        for task in tasks + [self._job._end_task]:
             self._src_queues[task] = {}
             self._dest_queues[task] = {}
 
         for task in tasks:
-            dest_set = self._job.next[task]
+            dest_set = self._job._next[task]
             for dest in dest_set:
                 q = mp.Queue()
                 self._dest_queues[task][dest] = q
@@ -92,13 +92,13 @@ class MPExecutor:
             mp.Process(
                 target=_worker,
                 args=(
-                    self._job.node[task],
+                    self._job._node[task],
                     self._src_queues[task],
                     self._dest_queues[task],
                     logging_queue,
                 ),
             )
-            for task in self._job.node.keys() - set([self._job.begin_task, self._job.end_task])
+            for task in self._job._node.keys() - set([self._job._begin_task, self._job._end_task])
         ]
 
         for p in self._processes:
@@ -107,7 +107,7 @@ class MPExecutor:
     def run(self, inputs: list[dict[str, t.Any]]):
         for input in inputs:
             for task, value in input.items():  # a graph might have multiple inputs.
-                self._dest_queues[self._job.begin_task][task].put(value)
+                self._dest_queues[self._job._begin_task][task].put(value)
                 
         if STOP in input.values():
             return {}
@@ -120,7 +120,7 @@ class MPExecutor:
         results = [
             {
                 task: __print_get(task, queue)
-                for task, queue in self._src_queues[self._job.end_task].items()
+                for task, queue in self._src_queues[self._job._end_task].items()
             }
             for _
             in range(len(inputs))
@@ -130,7 +130,7 @@ class MPExecutor:
 
     def shutdown(self):
         """join all the subprocesses."""
-        input_tasks = self._job.next[self._job.begin_task]
+        input_tasks = self._job._next[self._job._begin_task]
         inputs = [{task: STOP for task in input_tasks}]
         self.run(inputs)
         for p in self._processes:

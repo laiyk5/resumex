@@ -14,58 +14,58 @@ class JobGraph:
     A Special Digraph that is always connected.
     """
 
-    node: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]]
-    next: Dict[str, set[str]]
-    prev: Dict[str, set[str]]
+    _node: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]]
+    _next: Dict[str, set[str]]
+    _prev: Dict[str, set[str]]
 
     def __init__(self, name: str):
         self.name = name
 
-        self.node = dict()
-        self.next = dict()
-        self.prev = dict()
+        self._node = dict()
+        self._next = dict()
+        self._prev = dict()
 
-        self.begin_task = BEGIN_TASK_NAME
-        self.end_task = END_TASK_NAME
+        self._begin_task = BEGIN_TASK_NAME
+        self._end_task = END_TASK_NAME
 
-        self.node[self.begin_task] = _placeholder_task
-        self.node[self.end_task] = _placeholder_task
+        self._node[self._begin_task] = _placeholder_task
+        self._node[self._end_task] = _placeholder_task
 
-        self.prev[self.begin_task] = set()
-        self.next[self.begin_task] = set()
-        self.prev[self.end_task] = set()
-        self.next[self.end_task] = set()
+        self._prev[self._begin_task] = set()
+        self._next[self._begin_task] = set()
+        self._prev[self._end_task] = set()
+        self._next[self._end_task] = set()
 
     def __link_nodes(self, task1: str, task2: str):
-        self.next[task1].add(task2)
-        self.prev[task2].add(task1)
+        self._next[task1].add(task2)
+        self._prev[task2].add(task1)
 
     def __unlink_nodes(self, task1: str, task2: str):
-        self.next[task1].remove(task2)
-        self.prev[task2].remove(task1)
+        self._next[task1].remove(task2)
+        self._prev[task2].remove(task1)
 
     def add_node(self, task: str, fn: Callable[[Dict[str, Any]], Dict[str, Any]]):
-        if task in self.node.keys():
+        if task in self._node.keys():
             msg = f"task {task} already exists."
             raise ValueError(msg)
 
-        self.node[task] = fn
+        self._node[task] = fn
 
-        self.next[task] = set()
-        self.prev[task] = set()
+        self._next[task] = set()
+        self._prev[task] = set()
 
         # create default links
-        self.__link_nodes(self.begin_task, task)
-        self.__link_nodes(task, self.end_task)
+        self.__link_nodes(self._begin_task, task)
+        self.__link_nodes(task, self._end_task)
 
     def add_edge(self, task1: str, task2: str):
 
         # Remove default edges
-        if self.end_task in self.next[task1]:
-            self.__unlink_nodes(task1, self.end_task)
+        if self._end_task in self._next[task1]:
+            self.__unlink_nodes(task1, self._end_task)
 
-        if self.begin_task in self.prev[task2]:
-            self.__unlink_nodes(self.begin_task, task2)
+        if self._begin_task in self._prev[task2]:
+            self.__unlink_nodes(self._begin_task, task2)
 
         self.__link_nodes(task1, task2)
 
@@ -74,7 +74,7 @@ class JobGraph:
     def serialize(self) -> List[str]:
         serialization = []
         visited = set()
-        dependencies = deque([self.end_task])
+        dependencies = deque([self._end_task])
         while dependencies:
             head = dependencies.popleft()
             if head in visited:
@@ -82,12 +82,12 @@ class JobGraph:
             serialization.append(head)
             visited.add(head)
 
-            for d in self.prev[head]:
+            for d in self._prev[head]:
                 if d not in visited:
                     dependencies.append(d)
 
-        serialization.remove(self.begin_task)
-        serialization.remove(self.end_task)
+        serialization.remove(self._begin_task)
+        serialization.remove(self._end_task)
         serialization.reverse()
         return serialization
 
@@ -103,10 +103,10 @@ class JobGraph:
         """
         dot = graphviz.Digraph(comment=self.name)
 
-        for node in self.node:
+        for node in self._node:
             dot.node(node)
 
-        for node, edges in self.next.items():
+        for node, edges in self._next.items():
             for edge in edges:
                 dot.edge(node, edge)
 
