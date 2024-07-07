@@ -1,30 +1,20 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "resumex"
-authors = [
-    {name = "Yikai Lai", email = "laiyk5@163.com"},
-]
-description = "A python package tha handle common issues in data processing."
 version = "0.0.1"
+description = ""
+authors = ["Yikai Lai <laiyk5@163.com>"]
 readme = "README.md"
-dependencies = [
-    "graphviz",
-    "jsonlines",
-    "pydantic",
-    'importlib-metadata; python_version<"3.10"',
-]
 
-[tool.setuptools.packages.find]
-where = ["src"]  # ["."] by default
-include = ["resume*"]  # ["*"] by default
-exclude = ["resume.tests*"]  # empty by default
-namespaces = false  # true by default
+[tool.poetry.dependencies]
+python = "^3.11"
+graphviz = "^0.20.3"
+jsonlines = "^4.0.0"
+pydantic = "^2.8.2"
 
-[project.optional-dependencies]
-docs = [
-  "sphinx",
-  "sphinx_rtd_theme"
-]
+[tool.poetry.group.dev.dependencies]
+Sphinx = "^7.3.7"
+sphinx-rtd-theme = "^2.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
