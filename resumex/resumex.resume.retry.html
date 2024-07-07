@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>resumex &mdash; resume v0.0.1 documentation</title>
+  <title>resumex.resume.retry module &mdash; resume v0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -21,8 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="resumex package" href="resumex.html" />
-    <link rel="prev" title="API" href="../api.html" /> 
+    <link rel="prev" title="resumex.resume.easy_jsonl module" href="resumex.resume.easy_jsonl.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,8 +46,12 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">resumex</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="resumex.html">resumex package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">resumex</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="resumex.html">resumex package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="resumex.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.html#module-resumex">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -70,9 +73,12 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API</a></li>
-      <li class="breadcrumb-item active">resumex</li>
+          <li class="breadcrumb-item"><a href="modules.html">resumex</a></li>
+          <li class="breadcrumb-item"><a href="resumex.html">resumex package</a></li>
+          <li class="breadcrumb-item"><a href="resumex.resume.html">resumex.resume package</a></li>
+      <li class="breadcrumb-item active">resumex.resume.retry module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/resumex/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/resumex/resumex.resume.retry.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -80,37 +86,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="resumex">
-<h1>resumex<a class="headerlink" href="#resumex" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="resumex.html">resumex package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="resumex.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="resumex.job.html">resumex.job package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#module-resumex.job">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="resumex.resume.html">resumex.resume package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="resumex.resume.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="resumex.resume.html#module-resumex.resume">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="resumex.html#module-resumex">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <section id="module-resumex.resume.retry">
+<span id="resumex-resume-retry-module"></span><h1>resumex.resume.retry module<a class="headerlink" href="#module-resumex.resume.retry" title="Link to this heading"></a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="resumex.resume.retry.RetryFailedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.resume.retry.</span></span><span class="sig-name descname"><span class="pre">RetryFailedError</span></span><a class="headerlink" href="#resumex.resume.retry.RetryFailedError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="resumex.resume.retry.ShallRetryError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.resume.retry.</span></span><span class="sig-name descname"><span class="pre">ShallRetryError</span></span><a class="headerlink" href="#resumex.resume.retry.ShallRetryError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resumex.resume.retry.retry">
+<span class="sig-prename descclassname"><span class="pre">resumex.resume.retry.</span></span><span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;Logger</span> <span class="pre">resumex.resume.retry</span> <span class="pre">(WARNING)&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.resume.retry.retry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="resumex.html" class="btn btn-neutral float-right" title="resumex package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="resumex.resume.easy_jsonl.html" class="btn btn-neutral float-left" title="resumex.resume.easy_jsonl module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

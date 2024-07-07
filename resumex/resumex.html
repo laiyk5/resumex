@@ -21,6 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="resumex.job package" href="resumex.job.html" />
     <link rel="prev" title="resumex" href="modules.html" /> 
 </head>
 
@@ -48,12 +49,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="modules.html">resumex</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">resumex package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-resumex.executor">resumex.executor module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-resumex.job_graph">resumex.job_graph module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-resumex.mp_executor">resumex.mp_executor module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-resumex.scheduler">resumex.scheduler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-resumex.task">resumex.task module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-resumex">Module contents</a></li>
 </ul>
 </li>
@@ -91,414 +87,70 @@
              
   <section id="resumex-package">
 <h1>resumex package<a class="headerlink" href="#resumex-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
-<section id="module-resumex.executor">
-<span id="resumex-executor-module"></span><h2>resumex.executor module<a class="headerlink" href="#module-resumex.executor" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.executor.Executor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.executor.</span></span><span class="sig-name descname"><span class="pre">Executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scheduler</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.executor.Executor" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.executor.Executor.draw_graph">
-<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Digraph</span></span></span><a class="headerlink" href="#resumex.executor.Executor.draw_graph" title="Link to this definition"></a></dt>
-<dd><p>Draw the graph in graphviz.Digraph.</p>
-<p>The graph is updated as execution goes. Green indicates success,
-Red means failure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the graph.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>graphviz.Digraph</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.executor.Executor.finished_tasks">
-<span class="sig-name descname"><span class="pre">finished_tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_Record</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#resumex.executor.Executor.finished_tasks" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.executor.Executor.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resumex.executor.Executor.run" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.executor.Executor.scheduler">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#resumex.scheduler.Scheduler" title="resumex.scheduler.Scheduler"><span class="pre">Scheduler</span></a></em><a class="headerlink" href="#resumex.executor.Executor.scheduler" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.executor.Executor.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#resumex.task.Task" title="resumex.task.Task"><span class="pre">Task</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.executor.Executor.tasks" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resumex.executor.random">
-<span class="sig-prename descclassname"><span class="pre">resumex.executor.</span></span><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">x</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">interval</span> <span class="pre">[0,</span> <span class="pre">1).</span></span></span><a class="headerlink" href="#resumex.executor.random" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="module-resumex.job_graph">
-<span id="resumex-job-graph-module"></span><h2>resumex.job_graph module<a class="headerlink" href="#module-resumex.job_graph" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.job_graph.</span></span><span class="sig-name descname"><span class="pre">JobGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.job_graph.JobGraph" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A Special Digraph that is always connected.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.add_edge">
-<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.job_graph.JobGraph.add_edge" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.add_node">
-<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.job_graph.JobGraph.add_node" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.draw_graph">
-<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">render</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.job_graph.JobGraph.draw_graph" title="Link to this definition"></a></dt>
-<dd><p>Draw graph using graphviz.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>render</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to render the graph. Defaults to False.</p></li>
-<li><p><strong>filename</strong> (<em>_type_</em><em>, </em><em>optional</em>) – The path to store the rendered graph. Defaults to None.</p></li>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="resumex.job.html">resumex.job package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resumex.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="resumex.job.job_graph.html">resumex.job.job_graph module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.job_graph.html#resumex.job.job_graph.JobGraph"><code class="docutils literal notranslate"><span class="pre">JobGraph</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>graphviz.Digraph</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.next">
-<span class="sig-name descname"><span class="pre">next</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.job_graph.JobGraph.next" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.node">
-<span class="sig-name descname"><span class="pre">node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.job_graph.JobGraph.node" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.prev">
-<span class="sig-name descname"><span class="pre">prev</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.job_graph.JobGraph.prev" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.job_graph.JobGraph.serialize">
-<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.job_graph.JobGraph.serialize" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-resumex.mp_executor">
-<span id="resumex-mp-executor-module"></span><h2>resumex.mp_executor module<a class="headerlink" href="#module-resumex.mp_executor" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.mp_executor.MPExecutor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.mp_executor.</span></span><span class="sig-name descname"><span class="pre">MPExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#resumex.job_graph.JobGraph" title="resumex.job_graph.JobGraph"><span class="pre">JobGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.mp_executor.MPExecutor" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Multi-Progessing Executor</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.mp_executor.MPExecutor.arun">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">arun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.mp_executor.MPExecutor.arun" title="Link to this definition"></a></dt>
-<dd><p>async version of <cite>run</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>t.Any</em><em>]</em>) – a dictionary that map input task name to the input data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a coroutine that wrap output of <cite>run</cite>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Coroutine</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.mp_executor.MPExecutor.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.mp_executor.MPExecutor.run" title="Link to this definition"></a></dt>
-<dd><p>run on the input and block until all the output task generate results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary that map input task name to the input data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a dictionary that map output task name to the output data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.mp_executor.MPExecutor.shutdown">
-<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resumex.mp_executor.MPExecutor.shutdown" title="Link to this definition"></a></dt>
-<dd><p>join all the subprocesses.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resumex.mp_executor.worker">
-<span class="sig-prename descclassname"><span class="pre">resumex.mp_executor.</span></span><span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_queues</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_queues</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.mp_executor.worker" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="module-resumex.scheduler">
-<span id="resumex-scheduler-module"></span><h2>resumex.scheduler module<a class="headerlink" href="#module-resumex.scheduler" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.scheduler.</span></span><span class="sig-name descname"><span class="pre">Scheduler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#resumex.job_graph.JobGraph" title="resumex.job_graph.JobGraph"><span class="pre">JobGraph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.scheduler.Scheduler" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.candidates">
-<span class="sig-name descname"><span class="pre">candidates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">deque</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">deque([])</span></em><a class="headerlink" href="#resumex.scheduler.Scheduler.candidates" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.commit">
-<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.scheduler.Scheduler.commit" title="Link to this definition"></a></dt>
-<dd><p>declares a step has finished.
-:param step: the id of the step.
-:type step: str</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.finished">
-<span class="sig-name descname"><span class="pre">finished</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#resumex.scheduler.Scheduler.finished" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.is_finished">
-<span class="sig-name descname"><span class="pre">is_finished</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#resumex.scheduler.Scheduler.is_finished" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.job">
-<span class="sig-name descname"><span class="pre">job</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#resumex.job_graph.JobGraph" title="resumex.job_graph.JobGraph"><span class="pre">JobGraph</span></a></em><a class="headerlink" href="#resumex.scheduler.Scheduler.job" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.scheduler.Scheduler.schedule">
-<span class="sig-name descname"><span class="pre">schedule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#resumex.scheduler.Scheduler.schedule" title="Link to this definition"></a></dt>
-<dd><p>schedule a step that is able to be executed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>schedule a task or if no task is available, return None.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str | None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-resumex.task">
-<span id="resumex-task-module"></span><h2>resumex.task module<a class="headerlink" href="#module-resumex.task" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.task.Task">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.task.</span></span><span class="sig-name descname"><span class="pre">Task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.task.Task" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Encapsulates a function call with its arguments and keyword arguments,
-allowing it to be executed as a single callable entity.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.task.Task.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#resumex.task.Task.name" title="Link to this definition"></a></dt>
-<dd><p>The name of the step.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+</li>
+<li class="toctree-l3"><a class="reference internal" href="resumex.job.mp_executor.html">resumex.job.mp_executor module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.mp_executor.html#resumex.job.mp_executor.MPExecutor"><code class="docutils literal notranslate"><span class="pre">MPExecutor</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resumex.job.html#module-resumex.job">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="resumex.job.html#resumex.job.JobGraph"><code class="docutils literal notranslate"><span class="pre">JobGraph</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.JobGraph.add_edge"><code class="docutils literal notranslate"><span class="pre">JobGraph.add_edge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.JobGraph.add_node"><code class="docutils literal notranslate"><span class="pre">JobGraph.add_node()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.JobGraph.draw_graph"><code class="docutils literal notranslate"><span class="pre">JobGraph.draw_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.JobGraph.serialize"><code class="docutils literal notranslate"><span class="pre">JobGraph.serialize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="resumex.job.html#resumex.job.MPExecutor"><code class="docutils literal notranslate"><span class="pre">MPExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.MPExecutor.run"><code class="docutils literal notranslate"><span class="pre">MPExecutor.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.job.html#resumex.job.MPExecutor.shutdown"><code class="docutils literal notranslate"><span class="pre">MPExecutor.shutdown()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resumex.resume.html">resumex.resume package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resumex.resume.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="resumex.resume.easy_jsonl.html">resumex.resume.easy_jsonl module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.IntervalAppender"><code class="docutils literal notranslate"><span class="pre">IntervalAppender</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.IntervalModifier"><code class="docutils literal notranslate"><span class="pre">IntervalModifier</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.append_jsonl"><code class="docutils literal notranslate"><span class="pre">append_jsonl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.read_jsonl"><code class="docutils literal notranslate"><span class="pre">read_jsonl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.resume_jsonl"><code class="docutils literal notranslate"><span class="pre">resume_jsonl()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.easy_jsonl.html#resumex.resume.easy_jsonl.write_jsonl"><code class="docutils literal notranslate"><span class="pre">write_jsonl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="resumex.resume.retry.html">resumex.resume.retry module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.retry.html#resumex.resume.retry.RetryFailedError"><code class="docutils literal notranslate"><span class="pre">RetryFailedError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.retry.html#resumex.resume.retry.ShallRetryError"><code class="docutils literal notranslate"><span class="pre">ShallRetryError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="resumex.resume.retry.html#resumex.resume.retry.retry"><code class="docutils literal notranslate"><span class="pre">retry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resumex.resume.html#module-resumex.resume">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="resumex.resume.html#resumex.resume.resume_jsonl"><code class="docutils literal notranslate"><span class="pre">resume_jsonl()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="resumex.resume.html#resumex.resume.retry"><code class="docutils literal notranslate"><span class="pre">retry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 <section id="module-resumex">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-resumex" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.Executor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.</span></span><span class="sig-name descname"><span class="pre">Executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scheduler</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.Executor" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.Executor.draw_graph">
-<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Digraph</span></span></span><a class="headerlink" href="#resumex.Executor.draw_graph" title="Link to this definition"></a></dt>
-<dd><p>Draw the graph in graphviz.Digraph.</p>
-<p>The graph is updated as execution goes. Green indicates success,
-Red means failure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the graph.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>graphviz.Digraph</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.Executor.finished_tasks">
-<span class="sig-name descname"><span class="pre">finished_tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_Record</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#resumex.Executor.finished_tasks" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.Executor.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resumex.Executor.run" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.Executor.scheduler">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#resumex.scheduler.Scheduler" title="resumex.scheduler.Scheduler"><span class="pre">Scheduler</span></a></em><a class="headerlink" href="#resumex.Executor.scheduler" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.Executor.tasks">
-<span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#resumex.task.Task" title="resumex.task.Task"><span class="pre">Task</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.Executor.tasks" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.JobGraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.</span></span><span class="sig-name descname"><span class="pre">JobGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.JobGraph" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A Special Digraph that is always connected.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.JobGraph.add_edge">
-<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.JobGraph.add_edge" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.JobGraph.add_node">
-<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.JobGraph.add_node" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.JobGraph.draw_graph">
-<span class="sig-name descname"><span class="pre">draw_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">render</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.JobGraph.draw_graph" title="Link to this definition"></a></dt>
-<dd><p>Draw graph using graphviz.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>render</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to render the graph. Defaults to False.</p></li>
-<li><p><strong>filename</strong> (<em>_type_</em><em>, </em><em>optional</em>) – The path to store the rendered graph. Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>graphviz.Digraph</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.JobGraph.next">
-<span class="sig-name descname"><span class="pre">next</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.JobGraph.next" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.JobGraph.node">
-<span class="sig-name descname"><span class="pre">node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.JobGraph.node" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.JobGraph.prev">
-<span class="sig-name descname"><span class="pre">prev</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#resumex.JobGraph.prev" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.JobGraph.serialize">
-<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.JobGraph.serialize" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.MPExecutor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.</span></span><span class="sig-name descname"><span class="pre">MPExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#resumex.job_graph.JobGraph" title="resumex.job_graph.JobGraph"><span class="pre">JobGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.MPExecutor" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Multi-Progessing Executor</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.MPExecutor.arun">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">arun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.MPExecutor.arun" title="Link to this definition"></a></dt>
-<dd><p>async version of <cite>run</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>t.Any</em><em>]</em>) – a dictionary that map input task name to the input data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a coroutine that wrap output of <cite>run</cite>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Coroutine</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.MPExecutor.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#resumex.MPExecutor.run" title="Link to this definition"></a></dt>
-<dd><p>run on the input and block until all the output task generate results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary that map input task name to the input data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a dictionary that map output task name to the output data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="resumex.MPExecutor.shutdown">
-<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resumex.MPExecutor.shutdown" title="Link to this definition"></a></dt>
-<dd><p>join all the subprocesses.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="resumex.Task">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resumex.</span></span><span class="sig-name descname"><span class="pre">Task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resumex.Task" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Encapsulates a function call with its arguments and keyword arguments,
-allowing it to be executed as a single callable entity.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="resumex.Task.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#resumex.Task.name" title="Link to this definition"></a></dt>
-<dd><p>The name of the step.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 </section>
 
@@ -507,6 +159,7 @@ allowing it to be executed as a single callable entity.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="modules.html" class="btn btn-neutral float-left" title="resumex" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="resumex.job.html" class="btn btn-neutral float-right" title="resumex.job package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
