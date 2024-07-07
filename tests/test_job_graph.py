@@ -1,4 +1,4 @@
-from resumex import JobGraph
+from resumex.job import JobGraph
 
 graph_task = JobGraph("anonymous")
 

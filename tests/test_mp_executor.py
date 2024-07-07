@@ -5,7 +5,7 @@ import time
 from logging import FileHandler, StreamHandler
 from multiprocessing import freeze_support
 
-from resumex import JobGraph, MPExecutor
+from resumex.job import JobGraph, MPExecutor
 
 
 def busy_wait(dt):
@@ -13,7 +13,7 @@ def busy_wait(dt):
     while time.time() < current_time + dt:
         pass
 
-from resumex.job_graph import BEGIN_TASK_NAME, END_TASK_NAME
+from resumex.job.job_graph import BEGIN_TASK_NAME, END_TASK_NAME
 
 SLEEPTIME = 0.1
 
