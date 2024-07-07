@@ -1,12 +1,12 @@
-.. resume documentation master file, created by
+.. ResumeX documentation master file, created by
    sphinx-quickstart on Wed Jun 19 14:12:11 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to resume's documentation!
-==================================
+Welcome to ResumeX's documentation!
+===================================
 
-**resume** (/re'zume/) is a Python library for handling tasks that might broke
+**ResumeX** is a Python library for handling tasks that might broke
 at any time. It help you write *robust* code and offer you an *intuitive*
 interface of the progress of each task you ran.
 

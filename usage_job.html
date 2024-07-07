@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobGraph and MPExecutor Usage Guide &mdash; resume v0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2fea6348"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Installation" href="usage_installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            resume
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="usage_installation.html">Installation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">JobGraph and MPExecutor Usage Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setup-and-initialization">Setup and Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-and-visualizing-job-graph">Creating and Visualizing Job Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#executing-the-job-graph">Executing the Job Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-full-example">A Full Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">resume</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="usage.html">Usage</a></li>
+      <li class="breadcrumb-item active">JobGraph and MPExecutor Usage Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage_job.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jobgraph-and-mpexecutor-usage-guide">
+<h1>JobGraph and MPExecutor Usage Guide<a class="headerlink" href="#jobgraph-and-mpexecutor-usage-guide" title="Link to this heading"></a></h1>
+<p>This guide explains how to use the <cite>JobGraph</cite> and <cite>MPExecutor</cite> classes from the <cite>resumex</cite> package. It covers setting up a job graph and executing tasks with multiprocessing.</p>
+<section id="setup-and-initialization">
+<h2>Setup and Initialization<a class="headerlink" href="#setup-and-initialization" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Import Required Modules</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">freeze_support</span>
+<span class="kn">from</span> <span class="nn">resumex.job</span> <span class="kn">import</span> <span class="n">JobGraph</span><span class="p">,</span> <span class="n">MPExecutor</span>
+<span class="kn">from</span> <span class="nn">resumex.job.job_graph</span> <span class="kn">import</span> <span class="n">BEGIN_TASK_NAME</span>
+
+<span class="n">SLEEPTIME</span> <span class="o">=</span> <span class="mf">0.1</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Define Task Functions</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fn_1</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="n">BEGIN_TASK_NAME</span><span class="p">],</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="n">BEGIN_TASK_NAME</span><span class="p">]}</span>
+
+<span class="k">def</span> <span class="nf">fn_2</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">]}</span>
+
+<span class="k">def</span> <span class="nf">fn_3</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__end__&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;2&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Set Number of Rounds</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NUMBER_OF_ROUNDS</span> <span class="o">=</span> <span class="mi">30</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="creating-and-visualizing-job-graph">
+<h2>Creating and Visualizing Job Graph<a class="headerlink" href="#creating-and-visualizing-job-graph" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Create JobGraph Instance</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">JobGraph</span><span class="p">(</span><span class="s2">&quot;simple_graph&quot;</span><span class="p">)</span>
+<span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">fn_1</span><span class="p">)</span>
+<span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">fn_2</span><span class="p">)</span>
+<span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="n">fn_3</span><span class="p">)</span>
+
+<span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+<span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Draw and Save the Job Graph (Optional)</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out_dpth</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="s2">&quot;tests&quot;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dpth</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">job</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">(</span><span class="n">render</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dpth</span><span class="p">,</span> <span class="s2">&quot;simple_job_graph.gv&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="executing-the-job-graph">
+<h2>Executing the Job Graph<a class="headerlink" href="#executing-the-job-graph" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Create MPExecutor Instance</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">executor</span> <span class="o">=</span> <span class="n">MPExecutor</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run the Job Graph</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_ROUNDS</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Shutdown the Executor</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>This guide demonstrates how to set up and execute a simplified job graph using <cite>resumex</cite>, leveraging multiprocessing for parallel execution.</p>
+</section>
+<section id="a-full-example">
+<h2>A Full Example<a class="headerlink" href="#a-full-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">FileHandler</span><span class="p">,</span> <span class="n">StreamHandler</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">freeze_support</span>
+
+<span class="kn">from</span> <span class="nn">resumex.job</span> <span class="kn">import</span> <span class="n">JobGraph</span><span class="p">,</span> <span class="n">MPExecutor</span>
+
+<span class="kn">from</span> <span class="nn">resumex.job.job_graph</span> <span class="kn">import</span> <span class="n">BEGIN_TASK_NAME</span>
+
+<span class="n">SLEEPTIME</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="k">def</span> <span class="nf">fn_1</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="n">BEGIN_TASK_NAME</span><span class="p">],</span>
+        <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="n">BEGIN_TASK_NAME</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_2</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">],</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">]}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_3</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">],</span> <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">]}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_4</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;2&quot;</span><span class="p">]}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_5</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;2&quot;</span><span class="p">]}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_6</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;3&quot;</span><span class="p">]}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">fn_7</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;__end__&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">values</span><span class="p">())}</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEPTIME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="n">NUMBER_OF_ROUNDS</span> <span class="o">=</span> <span class="mi">30</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">freeze_support</span><span class="p">()</span>
+
+    <span class="n">out_dpth</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="s2">&quot;tests&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dpth</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(processName)s</span><span class="se">\t</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">console_handler</span> <span class="o">=</span> <span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="n">file_handler</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
+    <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;resume&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+
+    <span class="n">job</span> <span class="o">=</span> <span class="n">JobGraph</span><span class="p">(</span><span class="s2">&quot;greate&quot;</span><span class="p">)</span>
+
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">fn_1</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="n">fn_2</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="n">fn_3</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="n">fn_4</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="n">fn_5</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="n">fn_6</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="n">fn_7</span><span class="p">)</span>
+
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">(</span>
+        <span class="n">render</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dpth</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;test_mp_executor_job.gv&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">MPExecutor</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="n">begin_multi</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_ROUNDS</span><span class="p">)])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">end_multi</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="n">begin_single</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">end_single</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="n">elapsed_single</span> <span class="o">=</span> <span class="n">end_single</span> <span class="o">-</span> <span class="n">begin_single</span>
+    <span class="n">elapsed_multi</span> <span class="o">=</span> <span class="n">end_multi</span> <span class="o">-</span> <span class="n">begin_multi</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elapsed_single</span><span class="si">}</span><span class="s2">s elapsed&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elapsed_multi</span><span class="si">}</span><span class="s2">s elapsed&quot;</span><span class="p">)</span>
+    <span class="n">acc_rate</span> <span class="o">=</span> <span class="n">elapsed_single</span> <span class="o">*</span> <span class="n">NUMBER_OF_ROUNDS</span> <span class="o">/</span> <span class="p">(</span><span class="n">elapsed_multi</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceleration rate: </span><span class="si">{</span><span class="n">acc_rate</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">acc_rate</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage_installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Yikai Lai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
