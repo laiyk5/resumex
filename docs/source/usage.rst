@@ -1,13 +1,9 @@
 Usage
 =====
 
-.. _installation:
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
-Installation
-------------
-
-To use resume, first install it using pip:
-
-.. code-block:: console
-
-    (.venv) $ pip install resumex
+   usage_installation
+   usage_job
