@@ -1,32 +1,35 @@
 from collections import deque
-from typing import Dict, List, Set
+from typing import Any, Callable, Dict, List, Set
 
 import graphviz
 
 BEGIN_TASK_NAME = "__begin__"
 END_TASK_NAME = "__end__"
 
+def _placeholder_task(input):
+    return {}
+
 class JobGraph:
     """
     A Special Digraph that is always connected.
     """
 
-    node: Set[str]
+    node: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]]
     next: Dict[str, set[str]]
     prev: Dict[str, set[str]]
 
     def __init__(self, name: str):
         self.name = name
 
-        self.node = set()
+        self.node = dict()
         self.next = dict()
         self.prev = dict()
 
         self.begin_task = BEGIN_TASK_NAME
         self.end_task = END_TASK_NAME
 
-        self.node.add(self.begin_task)
-        self.node.add(self.end_task)
+        self.node[self.begin_task] = _placeholder_task
+        self.node[self.end_task] = _placeholder_task
 
         self.prev[self.begin_task] = set()
         self.next[self.begin_task] = set()
@@ -41,11 +44,12 @@ class JobGraph:
         self.next[task1].remove(task2)
         self.prev[task2].remove(task1)
 
-    def add_node(self, task: str):
-        if task in self.node:
-            return
+    def add_node(self, task: str, fn: Callable[[Dict[str, Any]], Dict[str, Any]]):
+        if task in self.node.keys():
+            msg = f"task {task} already exists."
+            raise ValueError(msg)
 
-        self.node.add(task)
+        self.node[task] = fn
 
         self.next[task] = set()
         self.prev[task] = set()
@@ -55,11 +59,6 @@ class JobGraph:
         self.__link_nodes(task, self.end_task)
 
     def add_edge(self, task1: str, task2: str):
-
-        if task1 not in self.node:
-            self.add_node(task1)
-        if task2 not in self.node:
-            self.add_node(task2)
 
         # Remove default edges
         if self.end_task in self.next[task1]:

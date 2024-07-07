@@ -11,7 +11,7 @@ STOP = "__STOP__"
 logger = logging.getLogger(__name__)
 
 
-def worker(
+def _worker(
     fn: t.Callable[[dict], dict],
     src_queues: dict[str, mp.Queue],
     dest_queues: dict[str, mp.Queue],
@@ -45,13 +45,12 @@ class MPExecutor:
     """
 
     _job: JobGraph
-    _task_fn: dict[str, t.Callable[[dict], dict]]
 
     _src_queues: dict[str, dict[str, mp.Queue]]
     _dest_queues: dict[str, dict[str, mp.Queue]]
     _processes: list[mp.Process]
 
-    def __init__(self, job: JobGraph, task_fn: dict[str, t.Callable[[dict], dict]]):
+    def __init__(self, job: JobGraph):
         """_summary_
 
         Args:
@@ -59,7 +58,6 @@ class MPExecutor:
             task_fn (dict[str, t.Callable[[dict], dict]]): task function sould accept a dict mapping input taskname to input data, and return a dict mapping output taskname to output data.
         """
         self._job = job
-        self._task_fn = task_fn
 
         # initialize (src/dest)-queue mapping for each task.
         self.__init_queues()
@@ -92,15 +90,15 @@ class MPExecutor:
 
         self._processes = [
             mp.Process(
-                target=worker,
+                target=_worker,
                 args=(
-                    self._task_fn[task],
+                    self._job.node[task],
                     self._src_queues[task],
                     self._dest_queues[task],
                     logging_queue,
                 ),
             )
-            for task in self._job.node - set([self._job.begin_task, self._job.end_task])
+            for task in self._job.node.keys() - set([self._job.begin_task, self._job.end_task])
         ]
 
         for p in self._processes:

@@ -83,18 +83,6 @@ if __name__ == "__main__":
     out_dpth = os.path.join('out', 'tests')
     os.makedirs(out_dpth, exist_ok=True)
 
-    job = JobGraph("greate")
-    job.add_edge("1", "2")
-    job.add_edge("1", "3")
-    job.add_edge("2", "4")
-    job.add_edge("2", "5")
-    job.add_edge("3", "5")
-    job.add_edge("3", "6")
-    job.add_edge("4", "7")
-    job.add_edge("5", "7")
-    job.add_edge("6", "7")
-    job.draw_graph(render=True, filename=os.path.join(out_dpth, f'test_mp_executor_job.gv'))
-
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(processName)s\t - %(levelname)s - %(message)s"
     )
@@ -111,19 +99,30 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
+    
+    job = JobGraph("greate")
 
-    task_fn = {
-        "1": fn_1,
-        "2": fn_2,
-        "3": fn_3,
-        "4": fn_4,
-        "5": fn_5,
-        "6": fn_6,
-        "7": fn_7,
-    }
-
-    executor = MPExecutor(job, task_fn)
-
+    job.add_node("1", fn_1)
+    job.add_node("2", fn_2)
+    job.add_node("3", fn_3)
+    job.add_node("4", fn_4)
+    job.add_node("5", fn_5)
+    job.add_node("6", fn_6)
+    job.add_node("7", fn_7)
+    
+    job.add_edge("1", "2")
+    job.add_edge("1", "3")
+    job.add_edge("2", "4")
+    job.add_edge("2", "5")
+    job.add_edge("3", "5")
+    job.add_edge("3", "6")
+    job.add_edge("4", "7")
+    job.add_edge("5", "7")
+    job.add_edge("6", "7")
+    job.draw_graph(render=True, filename=os.path.join(out_dpth, f'test_mp_executor_job.gv'))
+    
+    executor = MPExecutor(job)
+    
     """
     arun: 2.825, 2.767, 2.757, 2.742, 2.723
         avg: 2.715
