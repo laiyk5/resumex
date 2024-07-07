@@ -1,3 +1,5 @@
+![resumex logo](https://raw.githubusercontent.com/laiyk5/resumex/main/docs/source/_static/ResumeX.png)
+
 # ResumeX
 
 A python package tha handle common issues in data processing.
