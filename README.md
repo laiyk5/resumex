@@ -2,6 +2,11 @@
 
 A python package tha handle common issues in data processing.
 
+## Links
+
+- [github](https://github.com/laiyk5/resumex)
+- [doc](https://laiyk5.github.io/resumex)
+
 ## Usage
 
 1. Organize you tasks into a job, which is represented by `JobGraph`
