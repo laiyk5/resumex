@@ -1,6 +1,8 @@
 ![resumex logo](https://raw.githubusercontent.com/laiyk5/resumex/main/docs/source/_static/ResumeX.png)
 
 # ResumeX
+[![Upload Python Package](https://github.com/laiyk5/resumex/actions/workflows/python-publish.yml/badge.svg)](https://github.com/laiyk5/resumex/actions/workflows/python-publish.yml)
+[![Deploy Sphinx documentation to Pages](https://github.com/laiyk5/resumex/actions/workflows/doc-publish.yml/badge.svg?branch=main)](https://github.com/laiyk5/resumex/actions/workflows/doc-publish.yml)
 
 A python package tha handle common issues in data processing.
 
