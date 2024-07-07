@@ -105,19 +105,12 @@ class MPExecutor:
 
         for p in self._processes:
             p.start()
-
-    def run(self, input: dict[str, t.Any]) -> dict[str, t.Any]:
-        """run on the input and block until all the output task generate results.
-
-        Args:
-            input (dict[str, Any]): a dictionary that map input task name to the input data
-
-        Returns:
-            dict[str, Any]: a dictionary that map output task name to the output data.
-        """
-        for task, value in input.items():  # a graph might have multiple inputs.
-            self._dest_queues[self._job.begin_task][task].put(value)
-
+    
+    def run(self, inputs: list[dict[str, t.Any]]):
+        for input in inputs:
+            for task, value in input.items():  # a graph might have multiple inputs.
+                self._dest_queues[self._job.begin_task][task].put(value)
+                
         if STOP in input.values():
             return {}
 
@@ -126,28 +119,21 @@ class MPExecutor:
             logger.debug(f"GETTING {task}: {ret}")
             return ret
 
-        result = {
-            task: __print_get(task, queue)
-            for task, queue in self._src_queues[self._job.end_task].items()
-        }
-
-        return result
-
-    async def arun(self, input: dict[str, t.Any]) -> dict[str, t.Any]:
-        """async version of `run`
-
-        Args:
-            input (dict[str, t.Any]): a dictionary that map input task name to the input data
-
-        Returns:
-            Coroutine: a coroutine that wrap output of `run`.
-        """
-        return await asyncio.to_thread(self.run, input)
+        results = [
+            {
+                task: __print_get(task, queue)
+                for task, queue in self._src_queues[self._job.end_task].items()
+            }
+            for _
+            in range(len(inputs))
+        ]
+        
+        return results
 
     def shutdown(self):
         """join all the subprocesses."""
         input_tasks = self._job.next[self._job.begin_task]
-        inputs = {task: STOP for task in input_tasks}
+        inputs = [{task: STOP for task in input_tasks}]
         self.run(inputs)
         for p in self._processes:
             p.join()

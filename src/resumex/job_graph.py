@@ -3,8 +3,8 @@ from typing import Dict, List, Set
 
 import graphviz
 
-from .task import Task
-
+BEGIN_TASK_NAME = "__begin__"
+END_TASK_NAME = "__end__"
 
 class JobGraph:
     """
@@ -22,8 +22,8 @@ class JobGraph:
         self.next = dict()
         self.prev = dict()
 
-        self.begin_task = "__begin__"
-        self.end_task = "__end__"
+        self.begin_task = BEGIN_TASK_NAME
+        self.end_task = END_TASK_NAME
 
         self.node.add(self.begin_task)
         self.node.add(self.end_task)
@@ -116,23 +116,3 @@ class JobGraph:
                 filename = f"JobGraph_{self.name}"
             dot.render(filename, view=False)
         return dot
-
-
-# Example usage
-if __name__ == "__main__":
-
-    graph_task = JobGraph("anonymous")
-
-    task1 = Task(lambda: print("task 1"), name="task1")
-    task2 = Task(lambda: print("task 2"), name="task2")
-    task3 = Task(lambda: print("task 3"), name="task3")
-
-    graph_task.add_edge(task1.name, task2.name)  # task1 -> task2
-    graph_task.add_edge(task2.name, task3.name)  # task2 -> task3
-    graph_task.add_edge(task1.name, task3.name)
-
-    dot = graph_task.draw_graph(render=True)
-
-    print(graph_task.serialize())
-    print(repr(task1))
-    print(task1)

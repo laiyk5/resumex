@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import time
 from logging import FileHandler, StreamHandler
 from multiprocessing import freeze_support
@@ -12,51 +13,52 @@ def busy_wait(dt):
     while time.time() < current_time + dt:
         pass
 
+from resumex.job_graph import BEGIN_TASK_NAME, END_TASK_NAME
 
 SLEEPTIME = 0.1
 
 
 def fn_1(input):
     res = {
-        "2": None,
-        "3": None,
+        "2": input[BEGIN_TASK_NAME],
+        "3": input[BEGIN_TASK_NAME],
     }
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_2(input):
-    res = {"4": None, "5": None}
+    res = {"4": input["1"], "5": input["1"]}
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_3(input):
-    res = {"5": None, "6": None}
+    res = {"5": input["1"], "6": input["1"]}
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_4(input):
-    res = {"7": None}
+    res = {"7": input["2"]}
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_5(input):
-    res = {"7": None}
+    res = {"7": input["2"]}
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_6(input):
-    res = {"7": None}
+    res = {"7": input["3"]}
     busy_wait(SLEEPTIME)
     return res
 
 
 def fn_7(input):
-    res = {"__end__": None}
+    res = {"__end__": list(input.values())}
     busy_wait(SLEEPTIME)
     return res
 
@@ -65,18 +67,21 @@ NUMBER_OF_ROUNDS = 30
 
 
 async def main(executor: MPExecutor, rounds):
-    tasks = [
-        executor.arun({"1": None})
-        for _ in range(rounds)
+    inputs = [
+        {"1":  i}
+        for i in range(rounds)
     ]
     
-    results = await asyncio.gather(*tasks)
+    results = executor.run(inputs)
     print(results)
     return results
 
 
 if __name__ == "__main__":
     freeze_support()
+    
+    out_dpth = os.path.join('out', 'tests')
+    os.makedirs(out_dpth, exist_ok=True)
 
     job = JobGraph("greate")
     job.add_edge("1", "2")
@@ -88,7 +93,7 @@ if __name__ == "__main__":
     job.add_edge("4", "7")
     job.add_edge("5", "7")
     job.add_edge("6", "7")
-    job.draw_graph(render=True)
+    job.draw_graph(render=True, filename=os.path.join(out_dpth, f'test_mp_executor_job.gv'))
 
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(processName)s\t - %(levelname)s - %(message)s"
