@@ -6,6 +6,11 @@
 Welcome to ResumeX's documentation!
 ===================================
 
+.. image:: /_static/ResumeX.png
+   :class: full-width-image
+   :alt: ResumeX Logo
+
+
 **ResumeX** is a Python library for handling tasks that might broke
 at any time. It help you write *robust* code and offer you an *intuitive*
 interface of the progress of each task you ran.
